@@ -34,19 +34,51 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['name']) && isset($_POS
     $stmt->close();
     $conn->close();
 }
-?><!DOCTYPE html>
+?>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Welcome Boarders!</title>
+    <title>Send Feedback</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11">
     <style>
-        /* Your CSS styles here */
         body {
             font-family: Arial, sans-serif;
             background-color: #f8f9fa;
+        }
+        .container {
+            max-width: 500px;
+            margin: 50px auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        h2 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .form-group label {
+            font-weight: bold;
+        }
+        .form-control {
+            border-radius: 20px;
+        }
+        .btn-submit {
+            background-color: #007bff;
+            color: #fff;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 16px;
+            display: block;
+            width: 100%;
+            margin-top: 20px;
+        }
+        .btn-submit:hover {
+            background-color: #0056b3;
         }
         .top-bar {
             background-color: #343a40;
@@ -94,42 +126,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['name']) && isset($_POS
         .dropdown:hover .dropdown-content {
             display: block;
         }
-        .container {
-            max-width: 500px;
-            margin: 50px auto;
-            padding: 20px;
-            background-color: #f8f9fa;
-            border-radius: 10px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-        }
-        h2 {
-            text-align: center;
-            margin-bottom: 20px;
-        }
-        .form-group label {
-            font-weight: bold;
-        }
-        .form-control {
-            border-radius: 20px;
-        }
-        .btn-submit {
-            background-color: #007bff;
-            color: #fff;
-            border-radius: 20px;
-            cursor: pointer;
-            font-size: 16px;
-            display: block;
-            width: 100%;
-            margin-top: 20px;
-        }
-        .btn-submit:hover {
-            background-color: #0056b3;
-        }
     </style>
 </head>
 <body>
     <div class="top-bar">
-        <h3>Feedback Form</h3>
+        <h3>Send Feedback</h3>
         <div class="dropdown">
             <button class="dropdown-button"><b>Menu</b><i class="fas fa-chevron-down ml-2"></i></button>
             <div class="dropdown-content">
@@ -142,6 +143,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['name']) && isset($_POS
 
     <div class="container">
         <h2>Submit Your Feedback</h2>
+        <?php if ($message): ?>
+            <div class="alert alert-success" role="alert"><?php echo $message; ?></div>
+        <?php endif; ?>
         <form id="feedback-form" method="POST">
             <div class="form-group">
                 <label for="name">Your Name:</label>
@@ -156,7 +160,38 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['name']) && isset($_POS
     </div>
 
     <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
+        $('#feedback-form').submit(function(e) {
+            e.preventDefault();
+            var formData = $(this).serialize();
+            $.ajax({
+                type: 'POST',
+                url: 'sendfeedback.php',
+                data: formData,
+                success: function(response) {
+                    // Reset form
+                    $('#feedback-form')[0].reset();
+                    // Show success message
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Feedback Sent',
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
+                },
+                error: function(error) {
+                    console.log(error);
+                    // Show error message
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Oops...',
+                        text: 'Something went wrong!'
+                    });
+                }
+            });
+        });
+
         $('#logout-button').click(function () {
             $.ajax({
                 type: 'POST',
