@@ -29,6 +29,7 @@
                                     <th class="">Room #</th>
                                     <th class="">Monthly Rate</th>
                                     <th class="">Rental Balance</th>
+                                    <th class="">Months Rented</th>
                                     <th class="">Last Payment</th>
                                     <th class="text-center">Action</th>
                                 </tr>
@@ -36,8 +37,9 @@
                             <tbody>
                                 <?php 
                                 $i = 1;
-                                $tenant = $conn->query("SELECT t.*,concat(t.lastname,', ',t.firstname,' ',t.middlename) as name,h.house_no,h.price FROM tenants t inner join houses h on h.id = t.house_id where t.status = 1 order by h.house_no desc ");
+                                $tenant = $conn->query("SELECT t.*,concat(t.lastname,', ',t.firstname,' ',t.middlename) as name,h.house_no,h.price, t.date_in FROM tenants t inner join houses h on h.id = t.house_id where t.status = 1 order by h.house_no desc ");
                                 while($row=$tenant->fetch_assoc()):
+                                    $months_rented = floor((time() - strtotime($row['date_in'])) / (30*60*60*24));
                                     $months = abs(strtotime(date('Y-m-d')." 23:59:59") - strtotime($row['date_in']." 23:59:59"));
                                     $months = floor(($months) / (30*60*60*24));
                                     $payable = $row['price'] * $months;
@@ -53,6 +55,7 @@
                                     <td class="text-center"><b><?php echo $row['house_no'] ?></b></td>
                                     <td class="text-center"><b><?php echo number_format($row['price'],2) ?></b></td>
                                     <td class="text-center <?php echo ($outstanding != 0.00) ? 'highlight' : ''; ?>"><b><?php echo number_format($outstanding, 2) ?></b></td>
+                                    <td class="text-center"><b><?php echo $months_rented ?></b></td>
                                     <td class="text-center"><b><?php echo $last_payment ?></b></td>
                                     <td class="text-center">
                                         <button class="btn btn-sm btn-outline-primary view_payment" type="button" data-id="<?php echo $row['id'] ?>" >View</button>
