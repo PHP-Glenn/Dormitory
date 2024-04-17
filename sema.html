@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Semaphore</title>
+    <style>
+        body{ 
+            font-family: Arial, Helvetica, sans-serif;
+        }
+        #messageform label, #messageform input, #messageform button{
+            display: block;
+            margin: 1rem 0;
+        }
+
+    </style>
+</head>
+<body>
+    <link rel="short icon" href="/" type="image/x-icon">
+    <h1>Semaphore API Form</h1>
+    <form id="messageform">
+        <label for="apikey">API KEY</label>
+        <input type="text" id="apikey" required>
+        <label for="number">Number</label> <!-- Corrected label for number -->
+        <input type="text" id="number"> <!-- Corrected type attribute -->
+        <label for="message">Message</label>
+        <textarea  id="message" cols="30" rows="5"></textarea>
+        <button type="submit">Send Message</button>
+    </form>
+    <script src="sema.js"></script>
+</body>
+</html>
